@@ -112,24 +112,6 @@ class IKProgressView: UIView, CAAnimationDelegate {
         performAnimation()
 
     }
-
-    func testColors() {
-
-        colors = rotateColors(colors)
-
-        let gradient = CAGradientLayer()
-        gradient.frame = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
-        gradient.colors = colors
-        gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
-        gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
-
-        layer.addSublayer(gradient)
-        
-        self.gradient = gradient
-        
-        performAnimation()
-
-    }
     
     func performAnimation() {
         
@@ -150,7 +132,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
             animation.fillMode = kCAFillModeForwards
             animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
             
-            if (index == layers.endIndex) {
+            if (index == layers.count - 1) {
                 animation.delegate = self
             }
             
