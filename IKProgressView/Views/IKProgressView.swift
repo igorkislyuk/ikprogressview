@@ -16,93 +16,144 @@ class IKProgressView: UIView, CAAnimationDelegate {
             setNeedsDisplay()
         }
     }
-    
+
+    @IBInspectable var animated: Bool = true {
+        didSet {
+//            _animated = animated
+            setNeedsDisplay()
+        }
+    }
+
     @IBInspectable var fps: UInt = 120 {
         didSet {
             _fps = fps
         }
     }
-    
-    private var _fps: UInt = 120
+
+    /// Will use view height and width
+    @IBInspectable var fitView: Bool = true {
+        didSet {
+            _fitView = fitView
+            setNeedsDisplay()
+        }
+    }
+
+    @IBInspectable var interiorR: UInt = 200 {
+        didSet {
+            _r = interiorR
+            setNeedsDisplay()
+        }
+    }
+
+    @IBInspectable var exteriorR: UInt = 200 {
+        didSet {
+            _R = exteriorR
+            setNeedsDisplay()
+        }
+    }
+
+    /// For neat visual experience with border
+    public var scale: CGFloat = 0.99
+
+//    private var _animated: Bool = true
     private var _progress: CGFloat = 0.5
-    
-    private var colors = [UIColor]()
-    private var subdiv: Int = 512
-    
-    
+    private var _fps: UInt = 120
+
+    private var _fitView: Bool = true
+    private var _r: UInt = 100
+    private var _R: UInt = 200
+
+    private var _colors = [UIColor]()
+    private var _elementsCount: Int = 512
+
+    private var _timer: Timer?
+
+
     required override init(frame: CGRect) {
         super.init(frame: frame)
-        commonInit()
+        setupTimer()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        commonInit()
+        setupTimer()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         setNeedsDisplay()
     }
-    
-    func commonInit() {
-        Timer.scheduledTimer(withTimeInterval: 1.0 / Double(_fps), repeats: true, block: {
+
+    func setupTimer() {
+
+        _timer?.invalidate()
+        
+        if !animated {
+            return
+        }
+
+        _timer = Timer.scheduledTimer(withTimeInterval: 1.0 / Double(_fps), repeats: true, block: {
             [weak self]
             (timer) in
-            
+
             self?.setNeedsDisplay()
-            
+
         })
     }
-   
+
     override func draw(_ rect: CGRect) {
-        
-        colors = rotateColors(colors)
-        
+
+        _colors = rotateColors(_colors)
+
         UIColor.white.set()
         UIRectFill(bounds)
-    
-        let dim = min(bounds.width, bounds.height)
-        
-        let r = dim.divided(by: 4)
-        let R = dim.divided(by: 2)
-        
-        let halfInteriorPerim = M_PI.multiplied(by: Double(r))
-        let halfExteriorPerim = M_PI.multiplied(by: Double(R))
-        
-        let smallBase = halfInteriorPerim.divided(by: Double(subdiv))
-        let largeBase = halfExteriorPerim.divided(by: Double(subdiv))
-        
+
+        var r, R: UInt
+        if _fitView {
+            let dim = UInt(max(bounds.width, bounds.height))
+            r = dim / 4
+            R = dim / 2
+        } else {
+            r = _r
+            R = _R
+        }
+
+        let halfInteriorPerim = M_PI * Double(r)
+        let halfExteriorPerim = M_PI * Double(R)
+
+        let smallBase = halfInteriorPerim.divided(by: Double(_elementsCount))
+        let largeBase = halfExteriorPerim.divided(by: Double(_elementsCount))
+
         let trapezoid = UIBezierPath()
         trapezoid.move(to: CGPoint(x: -smallBase.divided(by: 2.0), y: Double(r)))
         trapezoid.addLine(to: CGPoint(x: +smallBase.divided(by: 2.0), y: Double(r)))
-        
+
         trapezoid.addLine(to: CGPoint(x: +largeBase.divided(by: 2.0), y: Double(R)))
         trapezoid.addLine(to: CGPoint(x: -largeBase.divided(by: 2.0), y: Double(R)))
-        
+
         trapezoid.close()
-        
-        var increment:CGFloat = CGFloat(2.0 * M_PI) / CGFloat(subdiv)
+
+        var increment: CGFloat = CGFloat(2.0 * M_PI) / CGFloat(_elementsCount)
         increment = increment * _progress
         if let context = UIGraphicsGetCurrentContext() {
-            
+
             context.translateBy(x: bounds.width.divided(by: 2.0), y: bounds.height.divided(by: 2))
-            
-            context.scaleBy(x: 0.9, y: 0.9)
+
+            context.scaleBy(x: scale, y: scale)
             context.rotate(by: CGFloat(M_PI_2) * CGFloat(3.0))
-            
-            for color in colors {
-            
+
+            for color in _colors {
+
                 color.set()
-                
+
                 trapezoid.fill()
                 trapezoid.stroke()
                 context.rotate(by: -increment)
-                
+
             }
         }
-        
+
     }
 
     private func rotateColors(_ colors: [UIColor]) -> [UIColor] {
@@ -113,9 +164,9 @@ class IKProgressView: UIView, CAAnimationDelegate {
             return Array(colors.suffix(1) + colors.prefix(colors.count - 1))
         }
 
-        for i in 0 ..< subdiv {
+        for i in 0 ..< _elementsCount {
 
-            let hueValue: CGFloat = CGFloat(i) / CGFloat(subdiv)
+            let hueValue: CGFloat = CGFloat(i) / CGFloat(_elementsCount)
             let color = UIColor(hue: hueValue, saturation: 1.0, brightness: 1.0, alpha: 1.0)
 
             colors.append(color)
