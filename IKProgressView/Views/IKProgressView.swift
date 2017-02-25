@@ -6,23 +6,37 @@
 import UIKit
 import QuartzCore
 
+@IBDesignable
 class IKProgressView: UIView, CAAnimationDelegate {
 
+    @IBInspectable var progress: UInt = 50 {
+        didSet {
+            let temp = progress > 100 ? 100 : progress
+            _progress = CGFloat(temp) / CGFloat(100)
+            setNeedsDisplay()
+        }
+    }
+    
+    @IBInspectable var fps: UInt = 120 {
+        didSet {
+            _fps = fps
+        }
+    }
+    
+    private var _fps: UInt = 120
+    private var _progress: CGFloat = 0.5
+    
     private var colors = [UIColor]()
+    private var subdiv: Int = 512
     
-    public var progress = 0.3
-    
-    private let subdiv = 512
     
     required override init(frame: CGRect) {
         super.init(frame: frame)
-        
         commonInit()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        
         commonInit()
     }
 
@@ -33,11 +47,11 @@ class IKProgressView: UIView, CAAnimationDelegate {
     }
     
     func commonInit() {
-        Timer.scheduledTimer(withTimeInterval: 1.0.divided(by: 120.0), repeats: true, block: {
+        Timer.scheduledTimer(withTimeInterval: 1.0 / Double(_fps), repeats: true, block: {
             [weak self]
             (timer) in
             
-//            self?.setNeedsDisplay()
+            self?.setNeedsDisplay()
             
         })
     }
@@ -60,31 +74,31 @@ class IKProgressView: UIView, CAAnimationDelegate {
         let smallBase = halfInteriorPerim.divided(by: Double(subdiv))
         let largeBase = halfExteriorPerim.divided(by: Double(subdiv))
         
-        let cell = UIBezierPath()
-        cell.move(to: CGPoint(x: -smallBase.divided(by: 2.0), y: Double(r)))
-        cell.addLine(to: CGPoint(x: +smallBase.divided(by: 2.0), y: Double(r)))
+        let trapezoid = UIBezierPath()
+        trapezoid.move(to: CGPoint(x: -smallBase.divided(by: 2.0), y: Double(r)))
+        trapezoid.addLine(to: CGPoint(x: +smallBase.divided(by: 2.0), y: Double(r)))
         
-        cell.addLine(to: CGPoint(x: +largeBase.divided(by: 2.0), y: Double(R)))
-        cell.addLine(to: CGPoint(x: -largeBase.divided(by: 2.0), y: Double(R)))
+        trapezoid.addLine(to: CGPoint(x: +largeBase.divided(by: 2.0), y: Double(R)))
+        trapezoid.addLine(to: CGPoint(x: -largeBase.divided(by: 2.0), y: Double(R)))
         
-        cell.close()
+        trapezoid.close()
         
-        let incr = M_PI.divided(by: Double(subdiv)).multiplied(by: 2.0)
+        var increment:CGFloat = CGFloat(2.0 * M_PI) / CGFloat(subdiv)
+        increment = increment * _progress
         if let context = UIGraphicsGetCurrentContext() {
             
             context.translateBy(x: bounds.width.divided(by: 2.0), y: bounds.height.divided(by: 2))
             
             context.scaleBy(x: 0.9, y: 0.9)
-//            context.rotate(by: M_PI.divided(by: 2).cgFloat)
-//            context.rotate(by: incr.divided(by: 2).cgFloat)
+            context.rotate(by: CGFloat(M_PI_2) * CGFloat(3.0))
             
             for color in colors {
             
                 color.set()
                 
-                cell.fill()
-                cell.stroke()
-                context.rotate(by: incr.cgFloat)
+                trapezoid.fill()
+                trapezoid.stroke()
+                context.rotate(by: -increment)
                 
             }
         }
@@ -110,33 +124,6 @@ class IKProgressView: UIView, CAAnimationDelegate {
         return colors
     }
 
-}
-
-extension Double {
-    var float: Float {
-        return Float(self)
-    }
-    var cgFloat: CGFloat {
-        return CGFloat(self)
-    }
-}
-
-extension Int {
-    var float: Float {
-        return Float(self)
-    }
-    var cgFloat: CGFloat {
-        return CGFloat(self)
-    }
-    var double: Double {
-        return Double(self)
-    }
-}
-
-extension Float {
-    var cgFloat: CGFloat {
-        return CGFloat(self)
-    }
 }
 
 extension UIColor {
