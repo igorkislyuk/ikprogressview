@@ -25,13 +25,13 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ajk-pR-gXl" customClass="IKProgressView" customModule="IKProgressView" customModuleProvider="target">
                                 <rect key="frame" x="20.666666666666657" y="181.66666666666663" width="372.66666666666663" height="372.66666666666674"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="ajk-pR-gXl" secondAttribute="height" multiplier="1:1" id="Lsl-As-W58"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="progress">
-                                        <integer key="value" value="50"/>
+                                        <integer key="value" value="68"/>
                                     </userDefinedRuntimeAttribute>
                                     <userDefinedRuntimeAttribute type="number" keyPath="fps">
                                         <integer key="value" value="120"/>
@@ -47,7 +47,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="0.7749204282407407" blue="0.74981915509259256" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="ajk-pR-gXl" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.9" id="93s-36-FgQ"/>
                             <constraint firstItem="ajk-pR-gXl" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="eOr-PL-DgN"/>

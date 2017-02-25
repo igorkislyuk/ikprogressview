@@ -6,6 +6,13 @@
 import UIKit
 import QuartzCore
 
+//todo: deal with setting from IB
+//todo: deal with background from view
+
+//todo: make pod
+//todo: make carthage
+//todo: generate doc
+
 @IBDesignable
 class IKProgressView: UIView, CAAnimationDelegate {
 
