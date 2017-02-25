@@ -6,12 +6,6 @@
 import UIKit
 import QuartzCore
 
-// todo: README
-// todo: license
-// todo: travis
-// todo: IBDesignable
-// todo: reposition
-
 class IKProgressView: UIView, CAAnimationDelegate {
 
     private var progressLabel: UILabel
@@ -47,9 +41,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
     private func commonInit() {
         self.backgroundColor = UIColor.clear
 
-//        testColors()
         createProgressLayer()
-//        testMethod()
     }
 
     override func layoutSubviews() {
@@ -57,63 +49,17 @@ class IKProgressView: UIView, CAAnimationDelegate {
         //todo: add functionality
     }
 
-    func createLabel() {
-
-        progressLabel = UILabel(frame: CGRect(x: 0.0, y: 0.0, width: frame.width, height: 60.0))
-        progressLabel.textColor = .white
-        progressLabel.textAlignment = .center
-        progressLabel.text = "Load content"
-        progressLabel.font = UIFont(name: "HelveticaNeue-UltraLight", size: 40.0)
-        progressLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(progressLabel)
-
-        addConstraint(NSLayoutConstraint(item: self, attribute: .centerX, relatedBy: .equal, toItem: progressLabel, attribute: .centerX, multiplier: 1.0, constant: 0.0))
-        addConstraint(NSLayoutConstraint(item: self, attribute: .centerY, relatedBy: .equal, toItem: progressLabel, attribute: .centerY, multiplier: 1.0, constant: 0.0))
-    }
-    
-    
-    func testMethod() {
-        
-        colors = rotateColors(colors)
-        
-        let circleRad = M_PI.multiplied(by: 2.double)
-        
-        let part = circleRad - circleRad.divided(by: colors.count.double)
-        
-        
-        
-        let path = UIBezierPath(arcCenter: center, radius: 150.cgFloat, startAngle: part.cgFloat, endAngle: part.cgFloat.multiplied(by: 2.cgFloat), clockwise: false).cgPath
-        
-        let layer = CAShapeLayer()
-        
-        layer.path = path
-        layer.strokeColor = UIColor.blue.cgColor
-        layer.backgroundColor = nil
-        layer.fillColor = nil
-        layer.lineWidth = 30.0
-        
-        self.layer.addSublayer(layer)
-        
-    }
-    
     func createShape(with path: CGPath, color: CGColor) -> CAShapeLayer {
     
         let layer = CAShapeLayer()
         
         layer.path = path
-        layer.strokeColor = color
+        layer.strokeColor = colors.first!
+        
         layer.backgroundColor = nil
         layer.fillColor = nil
         layer.lineWidth = 30.0
-        
-//        let gradient = CAGradientLayer()
-//        gradient.colors = [color]
-//        gradient.type = kCAGradientLayerAxial
-//        layer.contents = gradient
-        
-        
-//        layer.strokeStart = from.start.cgFloat
-//        layer.strokeEnd = from.end.cgFloat
+        layer.borderWidth = 0.0
         
         return layer
     }
@@ -135,7 +81,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
             
             let sector = sectorAngles(for: index)
             
-            path = UIBezierPath(arcCenter: center, radius: radius.cgFloat, startAngle: sector.start, endAngle: sector.end, clockwise: false).cgPath
+            path = UIBezierPath(arcCenter: center, radius: radius.cgFloat, startAngle: sector.start - 0.05, endAngle: sector.end - 0.05, clockwise: false).cgPath
             
             let shape = createShape(with: path, color: color)
             
@@ -147,7 +93,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
 
 
         
-//        performAnimation()
+        performAnimation()
 
     }
     
@@ -193,7 +139,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
     }
     
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-//        performAnimation()
+        performAnimation()
     }
 
     private func rotateColors(_ colors: [CGColor]) -> [CGColor] {
@@ -214,19 +160,6 @@ class IKProgressView: UIView, CAAnimationDelegate {
 
         return colors
     }
-
-    private func maskLayer() -> CAShapeLayer {
-        let layer = CAShapeLayer()
-
-        let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-        let rect = CGRect(origin: center, size: CGSize(width: 100, height: 140))
-        let path = UIBezierPath(rect: rect).cgPath
-
-        layer.path = path
-
-        return layer
-    }
-
 
 }
 
