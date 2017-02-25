@@ -37,6 +37,11 @@
                             <constraint firstItem="ajk-pR-gXl" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="eOr-PL-DgN"/>
                             <constraint firstItem="ajk-pR-gXl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="xuh-Jq-7M5"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="ajk-pR-gXl"/>
+                            </mask>
+                        </variation>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

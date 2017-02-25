@@ -8,154 +8,103 @@ import QuartzCore
 
 class IKProgressView: UIView, CAAnimationDelegate {
 
-    private var progressLabel: UILabel
-    private var progressLayer = CAShapeLayer()
-
-    private var gradient: CAGradientLayer?
-    private var colors = [CGColor]()
+    private var colors = [UIColor]()
     
-    private var layers = [CAShapeLayer]()
-    private var finished = false
-
-    override class var layerClass: AnyClass {
-        get {
-            return CAShapeLayer.self
-        }
-    }
-
-
-    required init?(coder aDecoder: NSCoder) {
-        progressLabel = UILabel()
-        super.init(coder: aDecoder)
-
-        commonInit()
-    }
-
-    override init(frame: CGRect) {
-        progressLabel = UILabel()
+    public var progress = 0.3
+    
+    private let subdiv = 512
+    
+    required override init(frame: CGRect) {
         super.init(frame: frame)
-
+        
         commonInit()
     }
-
-    private func commonInit() {
-        self.backgroundColor = UIColor.clear
-
-        createProgressLayer()
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        commonInit()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        //todo: add functionality
+        
+        setNeedsDisplay()
     }
-
-    func createShape(with path: CGPath, color: CGColor) -> CAShapeLayer {
     
-        let layer = CAShapeLayer()
-        
-        layer.path = path
-        layer.strokeColor = colors.first!
-        
-        layer.backgroundColor = nil
-        layer.fillColor = nil
-        layer.lineWidth = 30.0
-        layer.borderWidth = 0.0
-        
-        return layer
+    func commonInit() {
+        Timer.scheduledTimer(withTimeInterval: 1.0.divided(by: 120.0), repeats: true, block: {
+            [weak self]
+            (timer) in
+            
+//            self?.setNeedsDisplay()
+            
+        })
     }
-
-    func createProgressLayer() {
+   
+    override func draw(_ rect: CGRect) {
         
         colors = rotateColors(colors)
         
-        let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-        let radius = 150
-        var path: CGPath
-        
-        
-        
-        
-        for index in 0..<colors.count {
-            
-            let color = colors[index]
-            
-            let sector = sectorAngles(for: index)
-            
-            path = UIBezierPath(arcCenter: center, radius: radius.cgFloat, startAngle: sector.start - 0.05, endAngle: sector.end - 0.05, clockwise: false).cgPath
-            
-            let shape = createShape(with: path, color: color)
-            
-            layer.addSublayer(shape)
-            
-            layers.append(shape)
-        }
-
-
-
-        
-        performAnimation()
-
-    }
+        UIColor.white.set()
+        UIRectFill(bounds)
     
-    func sectorAngles(for index: Int) -> (start: CGFloat, end:CGFloat) {
+        let dim = min(bounds.width, bounds.height)
         
-        let circleRad = M_PI.multiplied(by: 2).cgFloat
-        let sectorRad = circleRad.divided(by: colors.count.cgFloat)
+        let r = dim.divided(by: 4)
+        let R = dim.divided(by: 2)
         
-        let start = sectorRad.multiplied(by: index.cgFloat)
-        let end = sectorRad.multiplied(by: (index + 1).cgFloat)
+        let halfInteriorPerim = M_PI.multiplied(by: Double(r))
+        let halfExteriorPerim = M_PI.multiplied(by: Double(R))
         
-        return (circleRad - start, circleRad - end)
-    }
-    
-    func performAnimation() {
+        let smallBase = halfInteriorPerim.divided(by: Double(subdiv))
+        let largeBase = halfExteriorPerim.divided(by: Double(subdiv))
         
-        let oldColors = colors
-        let newColors = rotateColors(colors)
+        let cell = UIBezierPath()
+        cell.move(to: CGPoint(x: -smallBase.divided(by: 2.0), y: Double(r)))
+        cell.addLine(to: CGPoint(x: +smallBase.divided(by: 2.0), y: Double(r)))
         
-        for (index, layer) in layers.enumerated() {
+        cell.addLine(to: CGPoint(x: +largeBase.divided(by: 2.0), y: Double(R)))
+        cell.addLine(to: CGPoint(x: -largeBase.divided(by: 2.0), y: Double(R)))
+        
+        cell.close()
+        
+        let incr = M_PI.divided(by: Double(subdiv)).multiplied(by: 2.0)
+        if let context = UIGraphicsGetCurrentContext() {
             
-            layer.strokeColor = newColors[index]
+            context.translateBy(x: bounds.width.divided(by: 2.0), y: bounds.height.divided(by: 2))
             
-            let animation = CABasicAnimation(keyPath: "strokeColor")
-            animation.fromValue = oldColors[index]
-            animation.toValue = newColors[index]
+            context.scaleBy(x: 0.9, y: 0.9)
+//            context.rotate(by: M_PI.divided(by: 2).cgFloat)
+//            context.rotate(by: incr.divided(by: 2).cgFloat)
             
+            for color in colors {
             
-            animation.duration = 0.08
-            animation.isRemovedOnCompletion = true
-            animation.fillMode = kCAFillModeForwards
-            animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
-            
-            if (index == layers.count - 1) {
-                animation.delegate = self
+                color.set()
+                
+                cell.fill()
+                cell.stroke()
+                context.rotate(by: incr.cgFloat)
+                
             }
-            
-            layer.add(animation, forKey: nil)
         }
         
-        colors = newColors
-        
-    }
-    
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        performAnimation()
     }
 
-    private func rotateColors(_ colors: [CGColor]) -> [CGColor] {
+    private func rotateColors(_ colors: [UIColor]) -> [UIColor] {
 
         var colors = colors
 
         guard colors.count == 0 else {
-            return Array(colors.suffix(colors.count - 1) + colors.prefix(1))
+            return Array(colors.suffix(1) + colors.prefix(colors.count - 1))
         }
 
-        for i in 0 ... 72 {
+        for i in 0 ..< subdiv {
 
-            let hueValue: CGFloat = (i * 5).float.divided(by: 360).cgFloat
+            let hueValue: CGFloat = CGFloat(i) / CGFloat(subdiv)
             let color = UIColor(hue: hueValue, saturation: 1.0, brightness: 1.0, alpha: 1.0)
 
-            colors.append(color.cgColor)
+            colors.append(color)
         }
 
         return colors
