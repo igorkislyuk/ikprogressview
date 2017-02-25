@@ -49,6 +49,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
 
 //        testColors()
         createProgressLayer()
+//        testMethod()
     }
 
     override func layoutSubviews() {
@@ -70,7 +71,32 @@ class IKProgressView: UIView, CAAnimationDelegate {
         addConstraint(NSLayoutConstraint(item: self, attribute: .centerY, relatedBy: .equal, toItem: progressLabel, attribute: .centerY, multiplier: 1.0, constant: 0.0))
     }
     
-    func createShape(with path: CGPath, from: (start: Float, end: Float), color: CGColor) -> CAShapeLayer {
+    
+    func testMethod() {
+        
+        colors = rotateColors(colors)
+        
+        let circleRad = M_PI.multiplied(by: 2.double)
+        
+        let part = circleRad - circleRad.divided(by: colors.count.double)
+        
+        
+        
+        let path = UIBezierPath(arcCenter: center, radius: 150.cgFloat, startAngle: part.cgFloat, endAngle: part.cgFloat.multiplied(by: 2.cgFloat), clockwise: false).cgPath
+        
+        let layer = CAShapeLayer()
+        
+        layer.path = path
+        layer.strokeColor = UIColor.blue.cgColor
+        layer.backgroundColor = nil
+        layer.fillColor = nil
+        layer.lineWidth = 30.0
+        
+        self.layer.addSublayer(layer)
+        
+    }
+    
+    func createShape(with path: CGPath, color: CGColor) -> CAShapeLayer {
     
         let layer = CAShapeLayer()
         
@@ -80,8 +106,14 @@ class IKProgressView: UIView, CAAnimationDelegate {
         layer.fillColor = nil
         layer.lineWidth = 30.0
         
-        layer.strokeStart = from.start.cgFloat
-        layer.strokeEnd = from.end.cgFloat
+//        let gradient = CAGradientLayer()
+//        gradient.colors = [color]
+//        gradient.type = kCAGradientLayerAxial
+//        layer.contents = gradient
+        
+        
+//        layer.strokeStart = from.start.cgFloat
+//        layer.strokeEnd = from.end.cgFloat
         
         return layer
     }
@@ -90,27 +122,44 @@ class IKProgressView: UIView, CAAnimationDelegate {
         
         colors = rotateColors(colors)
         
-        let startAngle: CGFloat = 0
-        let endAngle: CGFloat = CGFloat(M_PI * 2)
         let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-        let path = UIBezierPath(arcCenter: center, radius: 150, startAngle: startAngle, endAngle: endAngle, clockwise: false).cgPath
+        let radius = 150
+        var path: CGPath
         
-        let size = 0.006.float
         
-        for (index, color) in colors.enumerated() {
+        
+        
+        for index in 0..<colors.count {
             
-            let start = index.float.multiplied(by: size)
-            let end = (index + 1).float.multiplied(by: size)
+            let color = colors[index]
             
-            let shape = createShape(with: path, from: (start, end), color: color)
+            let sector = sectorAngles(for: index)
+            
+            path = UIBezierPath(arcCenter: center, radius: radius.cgFloat, startAngle: sector.start, endAngle: sector.end, clockwise: false).cgPath
+            
+            let shape = createShape(with: path, color: color)
             
             layer.addSublayer(shape)
             
             layers.append(shape)
         }
-        
-        performAnimation()
 
+
+
+        
+//        performAnimation()
+
+    }
+    
+    func sectorAngles(for index: Int) -> (start: CGFloat, end:CGFloat) {
+        
+        let circleRad = M_PI.multiplied(by: 2).cgFloat
+        let sectorRad = circleRad.divided(by: colors.count.cgFloat)
+        
+        let start = sectorRad.multiplied(by: index.cgFloat)
+        let end = sectorRad.multiplied(by: (index + 1).cgFloat)
+        
+        return (circleRad - start, circleRad - end)
     }
     
     func performAnimation() {
@@ -144,7 +193,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
     }
     
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-        performAnimation()
+//        performAnimation()
     }
 
     private func rotateColors(_ colors: [CGColor]) -> [CGColor] {
@@ -185,11 +234,20 @@ extension Double {
     var float: Float {
         return Float(self)
     }
+    var cgFloat: CGFloat {
+        return CGFloat(self)
+    }
 }
 
 extension Int {
     var float: Float {
         return Float(self)
+    }
+    var cgFloat: CGFloat {
+        return CGFloat(self)
+    }
+    var double: Double {
+        return Double(self)
     }
 }
 
