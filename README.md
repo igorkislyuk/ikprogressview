@@ -1,9 +1,11 @@
 # IKProgressView
 
-[![CI Status](http://img.shields.io/travis/igorkislyuk/IKProgressView.svg?style=flat)](https://travis-ci.org/igorkislyuk/IKProgressView)
+<!-- [![CI Status](http://img.shields.io/travis/igorkislyuk/IKProgressView.svg?style=flat)](https://travis-ci.org/igorkislyuk/IKProgressView) -->
+
 [![Version](https://img.shields.io/cocoapods/v/IKProgressView.svg?style=flat)](http://cocoapods.org/pods/IKProgressView)
 [![License](https://img.shields.io/cocoapods/l/IKProgressView.svg?style=flat)](http://cocoapods.org/pods/IKProgressView)
 [![Platform](https://img.shields.io/cocoapods/p/IKProgressView.svg?style=flat)](http://cocoapods.org/pods/IKProgressView)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/igorkislyuk/ikprogressview)
 
 ## Example
 
