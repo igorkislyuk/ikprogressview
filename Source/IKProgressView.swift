@@ -6,16 +6,18 @@
 import UIKit
 import QuartzCore
 
+
+/// Neat radial progress view
 @IBDesignable public class IKProgressView: UIView {
 
-    /// Progress value [0, 1]
+    /// Progress value within range [0, 1]
     @IBInspectable public var progress: CGFloat = 0.5 {
         didSet(newProgress) {
             setNeedsDisplay()
         }
     }
     
-    /// Will use view height and width
+    /// Specify true if you want that view will autofill itself in bounds
     @IBInspectable public var filledView: Bool = true {
         didSet {
             setNeedsDisplay()
@@ -36,17 +38,18 @@ import QuartzCore
         }
     }
     
-    /// Will gradient spinning
+    /// Active spinning or simple static image
     public var animated: Bool = true {
         didSet {
             _timer.isPaused = !animated
         }
     }
+    
     /// Rotated colors per one draw call. Must be lower than elements count
     public var colorsSpeed: Int = 10
+    
     /// For neat visual experience with border
     public var scale: CGFloat = 0.99
-    
     
     /// Set progress animated
     ///
@@ -78,11 +81,13 @@ import QuartzCore
     private var _countedDelta: CGFloat?
     private var _completion: (() -> ())?
 
+    /// Init for code
     public required override init(frame: CGRect) {
         super.init(frame: frame)
         enableAnimation()
     }
 
+    /// Init for IB
     public required init?(coder aDecoder: NSCoder) {
         
         self.progress = CGFloat(aDecoder.decodeFloat(forKey: "progress"))
@@ -94,19 +99,22 @@ import QuartzCore
         enableAnimation()
     }
 
+    /// Overridden from super
     public override func layoutSubviews() {
         super.layoutSubviews()
 
         setNeedsDisplay()
     }
 
-    func enableAnimation() {
+    /// Create CADisplayLink
+    private func enableAnimation() {
         
         _timer = CADisplayLink(target: self, selector: #selector(self.animate))
         _timer.add(to: RunLoop.current, forMode: .defaultRunLoopMode)
         
     }
     
+    /// Calls each redraw cycle from displayLink
     @objc private func animate() {
         
         if let countedDelta = _countedDelta {
@@ -135,6 +143,7 @@ import QuartzCore
         self.setNeedsDisplay()
     }
 
+    /// Main method for drawing
     override public func draw(_ rect: CGRect) {
         
         let progress = self.progress
@@ -191,6 +200,7 @@ import QuartzCore
 
     }
 
+    /// Rotate colors in array
     private func rotateColors(_ colors: [UIColor]) -> [UIColor] {
 
         var colors = colors
