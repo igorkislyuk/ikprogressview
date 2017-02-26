@@ -14,7 +14,7 @@ Awesome radial progress view using animated rainbow. Created using CoreGraphics
                        DESC
 
   s.homepage         = 'https://github.com/igorkislyuk/ikprogressview'
-  s.screenshots     = [ "https://raw.githubusercontent.com/igorkislyuk/ikprogressview/master/gifs/example-1.gif" ]
+  s.screenshots     = "https://raw.githubusercontent.com/igorkislyuk/ikprogressview/master/gifs/example-1.gif"
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'igorkislyuk' => 'igorkislyuk@icloud.com' }
   s.source           = { :git => 'https://github.com/igorkislyuk/ikprogressview.git', :tag => s.version.to_s }
