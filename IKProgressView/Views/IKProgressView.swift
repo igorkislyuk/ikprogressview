@@ -13,15 +13,12 @@ import QuartzCore
 @IBDesignable
 class IKProgressView: UIView, CAAnimationDelegate {
 
-    /// Progress value [0, 100]
-    @IBInspectable var progress: Int = 50 {
+    /// Progress value [0, 1]
+    @IBInspectable var progress: CGFloat = 0.5 {
         didSet(newProgress) {
             setNeedsDisplay()
         }
     }
-    
-    /// Count of trapezoids
-    @IBInspectable var elements: Int = 512
     
     /// Will use view height and width
     @IBInspectable var filledView: Bool = true {
@@ -50,29 +47,41 @@ class IKProgressView: UIView, CAAnimationDelegate {
             _timer.isPaused = !animated
         }
     }
-    /// Times progress view will draw itself
-    public var fps: Int = 240
+    /// Rotated colors per one draw call. Must be lower than elements count
+    public var colorsSpeed: Int = 10
     /// For neat visual experience with border
     public var scale: CGFloat = 0.99
+    
     
     /// Set progress animated
     ///
     /// - Parameters:
     ///   - progress: new progress
     ///   - animated: animated flag
-    public func setProgress(_ progress: Int, animated: Bool) {
+    ///   - completion: required function because of cg drawing. Use to set next progress
+    public func setProgress(_ progress: CGFloat, animated: Bool, _ completion: @escaping (() -> ()) ) {
+        guard animated else {
+            _newProgress = nil
+            self.progress = progress
+            completion()
+            return
+        }
+        
+        _newProgress = progress
+        _completion = completion
         
     }
 
     // MARK: - private section
     
+    /// Count of trapezoids
+    private var elements: Int = 512
+    
     private var _colors = [UIColor]()
     private var _timer: CADisplayLink!
-    
-    private var _progress: CGFloat {
-        return CGFloat(progress) / CGFloat(100)
-    }
-
+    private var _newProgress: CGFloat?
+    private var _countedDelta: CGFloat?
+    private var _completion: (() -> ())?
 
     required override init(frame: CGRect) {
         super.init(frame: frame)
@@ -81,8 +90,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
 
     required init?(coder aDecoder: NSCoder) {
         
-        self.progress = aDecoder.decodeInteger(forKey: "progress")
-        self.fps = aDecoder.decodeInteger(forKey: "fps")
+        self.progress = CGFloat(aDecoder.decodeFloat(forKey: "progress"))
         self.filledView = aDecoder.decodeBool(forKey: "filledView")
         self.interiorR = aDecoder.decodeInteger(forKey: "interiorR")
         self.exteriorR = aDecoder.decodeInteger(forKey: "exteriorR")
@@ -102,19 +110,39 @@ class IKProgressView: UIView, CAAnimationDelegate {
         _timer = CADisplayLink(target: self, selector: #selector(self.animate))
         _timer.add(to: RunLoop.current, forMode: .defaultRunLoopMode)
         
-        if #available(iOS 10, *) {
-            _timer.preferredFramesPerSecond = fps
-        } else {
-            _timer.frameInterval = 60 / fps
-        }
-        
     }
     
     @objc private func animate() {
+        
+        if let countedDelta = _countedDelta {
+            
+            let roundedProgress = CGFloat(round(100*progress)/100)
+            
+            if let newProgress = _newProgress, roundedProgress != newProgress {
+                progress += countedDelta
+            } else {
+                _countedDelta = nil
+                _newProgress = nil
+                if let handler = _completion {
+                    handler()
+                    _completion = nil
+                }
+            }
+        } else {
+            
+            if let newProgress = _newProgress {
+                
+                let delta = (newProgress - progress) / 60.0
+                _countedDelta = delta
+            }
+        }
+        
         self.setNeedsDisplay()
     }
 
     override func draw(_ rect: CGRect) {
+        
+        let progress = self.progress
         
         _colors = rotateColors(_colors)
 
@@ -146,7 +174,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
 
         trapezoid.close()
 
-        let increment: CGFloat = CGFloat(2.0 * M_PI) * _progress / CGFloat(elements)
+        let increment: CGFloat = CGFloat(2.0 * M_PI) * progress / CGFloat(elements)
         if let context = UIGraphicsGetCurrentContext() {
 
             context.translateBy(x: bounds.width.divided(by: 2.0), y: bounds.height.divided(by: 2))
@@ -173,7 +201,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
         var colors = colors
 
         guard colors.count == 0 else {
-            return Array(colors.suffix(1) + colors.prefix(colors.count - 1))
+            return Array(colors.suffix(colorsSpeed) + colors.prefix(colors.count - colorsSpeed))
         }
 
         for i in 0 ..< elements {

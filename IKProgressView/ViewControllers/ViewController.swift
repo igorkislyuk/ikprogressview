@@ -9,25 +9,33 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
     @IBOutlet weak var progressView: IKProgressView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let delta = 0.5
-        DispatchQueue.main.asyncAfter(deadline: .now() + delta) {
-            self.progressView.progress = 50
-            DispatchQueue.main.asyncAfter(deadline: .now() + delta, execute: {
-                self.progressView.progress = 73
-                DispatchQueue.main.asyncAfter(deadline: .now() + delta, execute: {
-                    self.progressView.progress = 100
-                })
-            })
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            [weak self]
+            in
+            self?.animateProgress()
         }
     }
-
+    
+    func animateProgress() {
+        let rand = arc4random_uniform(100)
+        let progress = CGFloat(rand) / CGFloat(100)
+        print(progress)
+        progressView.setProgress(progress, animated: true, {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                [weak self] in
+                self?.animateProgress()
+            }
+        })
+        
+    }
+    
     @IBAction func actionValueChanged(_ sender: Any) {
         if let sw = sender as? UISwitch {
             progressView.animated = sw.isOn
@@ -52,21 +60,5 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func actionElementsChanged(_ sender: Any) {
-        if let sl = sender as? UISlider {
-            print("Elements: " + String(sl.value))
-            progressView.elements = Int(sl.value)
-        }
-    }
-    
-    @IBAction func actionProgressChanged(_ sender: Any) {
-        if let sl = sender as? UISlider {
-            print("Progress: " + String(sl.value))
-            progressView.progress = Int(sl.value)
-        }
-    }
-    
-    
-
 }
 
