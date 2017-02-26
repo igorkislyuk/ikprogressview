@@ -16,64 +16,58 @@ import QuartzCore
 @IBDesignable
 class IKProgressView: UIView, CAAnimationDelegate {
 
-    @IBInspectable var progress: UInt = 50 {
-        didSet {
-            let temp = progress > 100 ? 100 : progress
-            _progress = CGFloat(temp) / CGFloat(100)
+    /// Progress value [0, 100]
+    @IBInspectable var progress: Int = 50 {
+        didSet(newProgress) {
             setNeedsDisplay()
         }
     }
-
+    
+    /// Is gradient will spinning
     @IBInspectable var animated: Bool = true {
         didSet {
-//            _animated = animated
             setNeedsDisplay()
         }
     }
-
-    @IBInspectable var fps: UInt = 120 {
-        didSet {
-            _fps = fps
-        }
-    }
-
+    
     /// Will use view height and width
-    @IBInspectable var fitView: Bool = true {
+    @IBInspectable var filledView: Bool = true {
         didSet {
-            _fitView = fitView
             setNeedsDisplay()
         }
     }
-
-    @IBInspectable var interiorR: UInt = 200 {
+    
+    /// Inner radius in circle
+    @IBInspectable var interiorR: Int = 100 {
         didSet {
-            _r = interiorR
             setNeedsDisplay()
         }
     }
-
-    @IBInspectable var exteriorR: UInt = 200 {
+    
+    /// External radius in circle
+    @IBInspectable var exteriorR: Int = 150 {
         didSet {
-            _R = exteriorR
             setNeedsDisplay()
         }
     }
-
+    
+    /// Times progress view will draw itself
+    public var fps: Int = 120
     /// For neat visual experience with border
     public var scale: CGFloat = 0.99
 
-//    private var _animated: Bool = true
-    private var _progress: CGFloat = 0.5
-    private var _fps: UInt = 120
-
-    private var _fitView: Bool = true
-    private var _r: UInt = 100
-    private var _R: UInt = 200
-
+    // MARK: - private section
+    
     private var _colors = [UIColor]()
-    private var _elementsCount: Int = 512
+    private var _elementsCount: Int {
+        return progress * 5 + 12
+    }
 
     private var _timer: Timer?
+    
+    private var _progress: CGFloat {
+        return CGFloat(progress) / CGFloat(100)
+    }
 
 
     required override init(frame: CGRect) {
@@ -83,6 +77,14 @@ class IKProgressView: UIView, CAAnimationDelegate {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        
+        self.animated = aDecoder.decodeBool(forKey: "animated")
+        self.progress = aDecoder.decodeInteger(forKey: "progress")
+        self.fps = aDecoder.decodeInteger(forKey: "fps")
+        self.filledView = aDecoder.decodeBool(forKey: "filledView")
+        self.interiorR = aDecoder.decodeInteger(forKey: "interiorR")
+        self.exteriorR = aDecoder.decodeInteger(forKey: "exteriorR")
+        
         setupTimer()
     }
 
@@ -100,7 +102,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
             return
         }
 
-        _timer = Timer.scheduledTimer(withTimeInterval: 1.0 / Double(_fps), repeats: true, block: {
+        _timer = Timer.scheduledTimer(withTimeInterval: 1.0 / Double(fps), repeats: true, block: {
             [weak self]
             (timer) in
 
@@ -116,14 +118,14 @@ class IKProgressView: UIView, CAAnimationDelegate {
         UIColor.white.set()
         UIRectFill(bounds)
 
-        var r, R: UInt
-        if _fitView {
-            let dim = UInt(max(bounds.width, bounds.height))
+        var r, R: Int
+        if filledView {
+            let dim = Int(min(bounds.width, bounds.height))
             r = dim / 4
             R = dim / 2
         } else {
-            r = _r
-            R = _R
+            r = interiorR
+            R = exteriorR
         }
 
         let halfInteriorPerim = M_PI * Double(r)
