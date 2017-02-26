@@ -94,24 +94,24 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="asU-Di-iml" customClass="IKProgressView">
-                                <rect key="frame" x="76" y="28" width="263" height="242"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bVW-aP-cbE">
+                                <rect key="frame" x="20" y="20" width="374" height="509.66666666666663"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="5VH-Fs-ULq" secondAttribute="bottom" constant="8" symbolic="YES" id="0UV-88-4aw"/>
+                            <constraint firstItem="bVW-aP-cbE" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="875-yv-EjP"/>
                             <constraint firstItem="5VH-Fs-ULq" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" symbolic="YES" id="AEL-j5-ypQ"/>
-                            <constraint firstItem="asU-Di-iml" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="HHT-jT-gbC"/>
-                            <constraint firstItem="asU-Di-iml" firstAttribute="centerX" secondItem="5VH-Fs-ULq" secondAttribute="centerX" id="UN0-S0-Ena"/>
-                            <constraint firstAttribute="bottom" secondItem="asU-Di-iml" secondAttribute="bottom" constant="466" id="YY6-Sh-DQd"/>
+                            <constraint firstItem="5VH-Fs-ULq" firstAttribute="top" secondItem="bVW-aP-cbE" secondAttribute="bottom" constant="8" symbolic="YES" id="Gsp-ar-QK4"/>
                             <constraint firstAttribute="trailing" secondItem="5VH-Fs-ULq" secondAttribute="trailing" constant="20" symbolic="YES" id="a0V-nR-Z5v"/>
-                            <constraint firstItem="asU-Di-iml" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="56" id="vve-go-RBb"/>
+                            <constraint firstItem="bVW-aP-cbE" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="bR1-6H-yDt"/>
+                            <constraint firstItem="bVW-aP-cbE" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="dhh-yO-0OO"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="progressView" destination="asU-Di-iml" id="mwo-qA-IXo"/>
+                        <outlet property="containerView" destination="bVW-aP-cbE" id="aHY-sj-DZT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

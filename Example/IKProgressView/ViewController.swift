@@ -11,17 +11,22 @@ import IKProgressView
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var progressView: IKProgressView!
+    @IBOutlet weak var containerView: UIView!
+    weak var progressView: IKProgressView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+    
+        //it is created manually, because there is bug in cocoapod example with live rendering
+        progressView = IKProgressView(frame: containerView.bounds)
+        progressView.backgroundColor = UIColor.white
+        containerView.addSubview(progressView)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            [weak self]
-            in
-            self?.animateProgress()
-        }
+        animateProgress()
     }
     
     func animateProgress() {
