@@ -1,6 +1,0 @@
-target 'IKProgressView_Example' do
-
-  use_frameworks!
-  pod 'IKProgressView', :path => '../'
-
-end

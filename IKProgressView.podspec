@@ -24,4 +24,5 @@ Awesome radial progress view using animated rainbow. Created using CoreGraphics
 
   s.source_files = 'IKProgressView/Classes/**/*'
   s.frameworks = 'UIKit', 'QuartzCore'
+  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3' }
 end
