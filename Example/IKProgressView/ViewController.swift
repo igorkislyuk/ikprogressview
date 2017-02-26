@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import IKProgressView
 
 class ViewController: UIViewController {
     

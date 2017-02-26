@@ -1,28 +1,8 @@
-*~
-.idea
+# OS X
+.DS_Store
 
-## Mac OS X
-*.DS_Store
-
-## Generated files
-*.o
-*.pyc
-
-## Python modules
-MANIFEST
-dist/
+# Xcode
 build/
-
-## Backup files
-*~.nib
-\##*##
-.##*
-
-## Build generated
-build/
-DerivedData/
-
-## Various settings
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -32,32 +12,22 @@ DerivedData/
 *.perspectivev3
 !default.perspectivev3
 xcuserdata/
-
-## Other
+*.xccheckout
+profile
 *.moved-aside
-*.xcuserstate
-
-## Obj-C/Swift specific
+DerivedData
 *.hmap
 *.ipa
-*.dSYM.zip
-*.dSYM
 
-## CocoaPods
-Pods/
-Podfile.lock
+# Bundler
+.bundle
 
-*.xcworkspace/
-
-## Carthage
-Carthage/Build
-
-## fastlane
-
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
-
-## Code Injection
-iOSInjectionProject/
+Carthage
+# We recommend against adding the Pods directory to your .gitignore. However
+# you should judge for yourself, the pros and cons are mentioned at:
+# http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
+# 
+# Note: if you ignore the Pods directory, make sure to uncomment
+# `pod install` in .travis.yml
+#
+# Pods/

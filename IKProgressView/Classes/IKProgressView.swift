@@ -6,36 +6,31 @@
 import UIKit
 import QuartzCore
 
-//todo: make pod
-//todo: make carthage
-//todo: generate doc
-
-@IBDesignable
-class IKProgressView: UIView, CAAnimationDelegate {
+@IBDesignable public class IKProgressView: UIView {
 
     /// Progress value [0, 1]
-    @IBInspectable var progress: CGFloat = 0.5 {
+    @IBInspectable public var progress: CGFloat = 0.5 {
         didSet(newProgress) {
             setNeedsDisplay()
         }
     }
     
     /// Will use view height and width
-    @IBInspectable var filledView: Bool = true {
+    @IBInspectable public var filledView: Bool = true {
         didSet {
             setNeedsDisplay()
         }
     }
     
     /// Inner radius in circle
-    @IBInspectable var interiorR: Int = 100 {
+    @IBInspectable public var interiorR: Int = 100 {
         didSet {
             setNeedsDisplay()
         }
     }
     
     /// External radius in circle
-    @IBInspectable var exteriorR: Int = 150 {
+    @IBInspectable public var exteriorR: Int = 150 {
         didSet {
             setNeedsDisplay()
         }
@@ -83,12 +78,12 @@ class IKProgressView: UIView, CAAnimationDelegate {
     private var _countedDelta: CGFloat?
     private var _completion: (() -> ())?
 
-    required override init(frame: CGRect) {
+    public required override init(frame: CGRect) {
         super.init(frame: frame)
         enableAnimation()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         
         self.progress = CGFloat(aDecoder.decodeFloat(forKey: "progress"))
         self.filledView = aDecoder.decodeBool(forKey: "filledView")
@@ -99,7 +94,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
         enableAnimation()
     }
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
 
         setNeedsDisplay()
@@ -140,7 +135,7 @@ class IKProgressView: UIView, CAAnimationDelegate {
         self.setNeedsDisplay()
     }
 
-    override func draw(_ rect: CGRect) {
+    override public func draw(_ rect: CGRect) {
         
         let progress = self.progress
         
