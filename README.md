@@ -1,6 +1,6 @@
 # IKProgressView
 
-[![CIStatus](http://img.shields.io/travis/igorkislyuk/IKProgressView.svg?style=flat)](https://travis-ci.org/igorkislyuk/IKProgressView)
+[![CIStatus](http://img.shields.io/travis/igorkislyuk/ikprogressview.svg?style=flat)](https://travis-ci.org/igorkislyuk/ikprogressview)
 [![Version](https://img.shields.io/cocoapods/v/IKProgressView.svg?style=flat)](http://cocoapods.org/pods/IKProgressView)
 [![License](https://img.shields.io/cocoapods/l/IKProgressView.svg?style=flat)](http://cocoapods.org/pods/IKProgressView)
 [![Platform](https://img.shields.io/cocoapods/p/IKProgressView.svg?style=flat)](http://cocoapods.org/pods/IKProgressView)
