@@ -1,7 +1,6 @@
 # IKProgressView
 
-<!-- [![CI Status](http://img.shields.io/travis/igorkislyuk/IKProgressView.svg?style=flat)](https://travis-ci.org/igorkislyuk/IKProgressView) -->
-
+[![CIStatus](http://img.shields.io/travis/igorkislyuk/IKProgressView.svg?style=flat)](https://travis-ci.org/igorkislyuk/IKProgressView)
 [![Version](https://img.shields.io/cocoapods/v/IKProgressView.svg?style=flat)](http://cocoapods.org/pods/IKProgressView)
 [![License](https://img.shields.io/cocoapods/l/IKProgressView.svg?style=flat)](http://cocoapods.org/pods/IKProgressView)
 [![Platform](https://img.shields.io/cocoapods/p/IKProgressView.svg?style=flat)](http://cocoapods.org/pods/IKProgressView)
@@ -9,7 +8,7 @@
 
 ## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+To run the example project, clone the repo, and run iOS-Example project.
 
 ## Requirements
 
@@ -17,12 +16,19 @@ iOS 8.0 and higher
 
 ## Installation
 
-IKProgressView is available through [CocoaPods](http://cocoapods.org). To install
+- It is available through [CocoaPods](http://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
 pod "IKProgressView"
 ```
+
+- It is available through [Carthage](https://github.com/Carthage/Carthage). Use
+```carthage
+github 'igorkislyuk/ikprogressview'
+```
+
+- You can simply drag'n'drop IKProgressView.swift in you project
 
 ## Example
 <img src="https://raw.githubusercontent.com/igorkislyuk/ikprogressview/master/gifs/example-1.gif" width="267px"/>
@@ -31,12 +37,17 @@ pod "IKProgressView"
 
 - Cool radial animated progress view.
 
-- Use `setProgress(XXX, animated: YYY, ZZZ)` - method for setting progress animated or not. Completion is required due to animation performs with redraw whole progress view. If you know how to implement this stuff using CoreAnimation, feel free to contact me.
+- Use `setProgress(XXX, animated: YYY, ZZZ)` - method for setting progress animated or not. Completion is required due to animation performs with redraw whole progress view. XXX - float of progress, YYY - Bool value, ZZZ - required completion
+Note: if you know how to implement this stuff using CoreAnimation, or high-level API, feel free to contact me.
 - `filledView` - mean that progress view will use whole view, measure it sizes itself
-- `interiorR` & `exteriorR` - radiuses for progress view, only usable within turn off-ed `filledView`
+- `interiorR` & `exteriorR` - radiuses for progress view. Note: only usable within turn off-ed `filledView`
 - `animated` - static view, or active redrawing with gradient animation.
 
 There are some inner setting, you can play with.
+
+## Docs
+
+See `docs` folder for exhaustive documentation
 
 ## Author
 
